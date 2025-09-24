@@ -1,6 +1,6 @@
 // --- 設定項目 ---
-const LIFF_ID = "YOUR_LIFF_ID"; // 3. で取得するLIFF IDをここに入力
-const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxWtpYlUi7giPbO_8NjGkKAcf1HGLauGJPp8PQOZaTyNJ6Idg7RsuHFeAAOvSEPAEhD/exec"; // 1. で取得したGASのURLをここに入力
+const LIFF_ID = "2008166327-NVge42LW"; 
+const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxWtpYlUi7giPbO_8NjGkKAcf1HGLauGJPp8PQOZaTyNJ6Idg7RsuHFeAAOvSEPAEhD/exec"; 
 // --- 設定はここまで ---
 
 document.addEventListener('DOMContentLoaded', () => {
