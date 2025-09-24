@@ -15,91 +15,87 @@ async function initializeLiff() {
             return;
         }
 
-        const profile = await liff.getProfile();
-        const userId = profile.userId;
-
+        const userId = (await liff.getProfile()).userId;
         const urlParams = new URLSearchParams(window.location.search);
         const eventId = urlParams.get('eventId');
 
+        // eventIdがあればポイント加算、なければデータ取得のみ
         if (eventId) {
-            // eventIdがある場合はポイント加算処理
             await addPoint(userId, eventId);
         } else {
-            // eventIdがない場合はユーザー情報取得のみ
-            await fetchUserData(userId);
+            await fetchUserData(userId, '会員証へようこそ！');
         }
 
     } catch (error) {
         console.error(error);
-        document.getElementById('loading').textContent = 'エラーが発生しました。';
         showMessage('LIFFの初期化に失敗しました。');
+    } finally {
+        // 処理の成否に関わらず、カードを表示する
+        document.getElementById('loading').classList.add('hidden');
+        document.getElementById('card-container').classList.remove('hidden');
     }
 }
 
-// サーバーにリクエストを送信する共通関数
-async function postToServer(data) {
+// ポイント加算処理（POSTリクエスト）
+async function addPoint(userId, eventId) {
+    showMessage('ポイントを加算中...');
     try {
         const response = await fetch(GAS_WEB_APP_URL, {
             method: 'POST',
-            mode: 'no-cors', // CORSエラーを回避するため
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
+            // GASはtext/plainで受け取るのが安定する
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action: 'addPoint', userId: userId, eventId: eventId })
         });
-        // no-corsモードではレスポンスボディを直接読めないため、
-        // 処理成功を前提として、最新情報を再取得する
-        return { status: 'success_nocors' };
-    } catch (error) {
-        console.error('Fetch error:', error);
-        throw new Error('サーバーとの通信に失敗しました。');
-    }
-}
 
-// ポイント加算処理
-async function addPoint(userId, eventId) {
-    showMessage('ポイントを確認中...');
-    try {
-        // ポイント加算リクエスト（no-corsのためレスポンスは直接使わない）
-        await postToServer({ action: 'addPoint', userId: userId, eventId: eventId });
+        const result = await response.json();
 
-        // ポイント加算後に最新のユーザー情報を取得して表示を更新
-        await fetchUserData(userId, 'ポイント処理が完了しました。');
-
-    } catch (error) {
-        showMessage(error.message);
-        await fetchUserData(userId); // エラーでも現在のポイントは表示
-    }
-}
-
-// ユーザー情報を取得して表示する関数
-async function fetchUserData(userId, initialMessage = '') {
-    try {
-        // GASのエンドポイントを直接叩くのではなく、doGetでユーザー情報を返す別のエンドポイントを用意するか、
-        // このデモではシンプルにするため、一旦ダミーで表示を更新し、GAS側での処理完了を信じる
-        // 本番環境では、GAS側でdoGetを実装し、そこから情報を取得するのがより堅牢
-
-        // とはいえ、doPostで情報を取得する口も作ったので、それを使ってみよう。
-        // しかし、no-corsではレスポンスが読めないため、このアプローチは使えない。
-        // GAS側でCORSヘッダーを許可するか、JSONPを使う必要があるが、今回はシンプルさを優先。
-        // ユーザーには「処理完了」とだけ伝え、実際のポイントはGAS側で更新されていると信じる。
-
-        const profile = await liff.getProfile();
-        document.getElementById('user-name').textContent = profile.displayName;
-        // ポイントはGASから取得できないので、一旦表示を隠すか、ローカルで保持するなどの工夫が必要
-        // ここでは、メッセージ表示に留める
-        if (initialMessage) {
-            showMessage(initialMessage);
-        } else {
-             showMessage('会員証へようこそ！');
+        if (result.status === 'error') {
+            throw new Error(result.message);
         }
 
-        // ローディングを非表示にし、カードを表示
-        document.getElementById('loading').classList.add('hidden');
-        document.getElementById('card-container').classList.remove('hidden');
+        showMessage(result.message || '処理が完了しました。');
 
     } catch (error) {
-        showMessage(error.message);
+        console.error('Add point error:', error);
+        showMessage(error.message || 'ポイント加算に失敗しました。');
+    } finally {
+        // ポイント加算処理の成否に関わらず、最後に必ず最新のポイント情報を取得・表示
+        await fetchUserData(userId);
+    }
+}
+
+// ユーザー情報を取得して表示する関数（GETリクエスト）
+async function fetchUserData(userId, initialMessage = null) {
+    if (initialMessage) {
+        showMessage(initialMessage);
+    }
+    try {
+        // URLにuserIdを付けてGETリクエストを送信
+        const response = await fetch(`${GAS_WEB_APP_URL}?userId=${userId}`);
+        const data = await response.json();
+
+        if (data.status === 'success') {
+            document.getElementById('user-name').textContent = data.name;
+            document.getElementById('points').textContent = `${data.points} P`;
+        } else {
+            // スプレッドシートにユーザーが見つからない場合、LINEの名前を表示
+            const profile = await liff.getProfile();
+            document.getElementById('user-name').textContent = profile.displayName;
+            document.getElementById('points').textContent = '0 P'; // ポイントは0と表示
+            showMessage(data.message);
+        }
+
+    } catch (error) {
+        console.error('Fetch user data error:', error);
+        showMessage('ユーザー情報の取得に失敗しました。');
+        // ネットワークエラー等の場合でも、LINEプロフィール名を表示
+        try {
+            const profile = await liff.getProfile();
+            document.getElementById('user-name').textContent = profile.displayName;
+        } catch (profileError) {
+            document.getElementById('user-name').textContent = '...';
+        }
+        document.getElementById('points').textContent = '-- P';
     }
 }
 
