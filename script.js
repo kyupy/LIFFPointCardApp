@@ -1,8 +1,8 @@
 // --- 設定項目 ---
 // ポイント加算専用GASのURLを設定する
-const GAS_WEB_APP_URL = "YOUR_POINT_ADDITION_GAS_URL"; 
-const LIFF_ID = "YOUR_LIFF_ID";
-// --- 設定はここまで ---
+const LIFF_ID = "2008166327-NVge42LW"; 
+const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxWtpYlUi7giPbO_8NjGkKAcf1HGLauGJPp8PQOZaTyNJ6Idg7RsuHFeAAOvSEPAEhD/exec"; 
+// --- 設定はここまで --
 
 document.addEventListener('DOMContentLoaded', () => {
     main();

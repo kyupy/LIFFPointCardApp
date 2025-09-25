@@ -29,7 +29,7 @@ body {
 .title {
     font-size: 0.9em;
     font-weight: bold;
-    style: italic;
+    font-style: italic;
     opacity: 0.9;
     margin: 0 0 10px 0;
 }
