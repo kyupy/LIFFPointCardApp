@@ -3,28 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Membership Card</title>
+    <title>Point Addition</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="loading" class="message-area">Loading...</div>
-    <div id="card-container" class="hidden">
+    <div class="container">
         <div class="card">
-            <div class="header">
-                <h2>MEMBERSHIP CARD</h2>
-            </div>
-            <div class="content">
-                <p class="name" id="user-name">Your Name</p>
-                <div class="points-area">
-                    <p class="points-label">保有ポイント</p>
-                    <p class="points-value" id="points">-- P</p>
-                </div>
-            </div>
-            <div class="footer">
-                <p>Stamp Card</p>
-            </div>
+            <p class="title">MEMBER CARD</p>
+            <h1 id="status-message">Processing...</h1>
+            <p id="result-message"></p>
         </div>
-        <div id="message" class="message-area"></div>
     </div>
 
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
