@@ -33,32 +33,26 @@ async function main() {
     }
 }
 
-async function addPoint(userId, eventId) {
-    try {
-        const response = await fetch(GAS_WEB_APP_URL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify({
-                action: 'addPoint',
-                userId: userId,
-                eventId: eventId
-            })
-        });
+// addPoint関数を「投げっぱなし」方式に変更
+function addPoint(userId, eventId) {
+    // 画面表示をすぐに更新
+    updateDisplay('Request Sent', 'ポイント加算リクエストを送信しました。');
 
-        const result = await response.json();
-
-        if (result.status === 'success') {
-            updateDisplay('Success!', result.message);
-        } else if (result.status === 'info') {
-            updateDisplay('Info', result.message);
-        } else {
-            throw new Error(result.message);
-        }
-
-    } catch (error) {
-        console.error(error);
-        updateDisplay('Error', 'ポイントの加算に失敗しました。');
-    }
+    // fetchを no-cors モードで実行し、応答を待たない
+    fetch(GAS_WEB_APP_URL, {
+        method: 'POST',
+        mode: 'no-cors', 
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({
+            action: 'addPoint',
+            userId: userId,
+            eventId: eventId
+        })
+    }).catch(error => {
+        // ネットワークエラーなど、送信自体に失敗した場合
+        console.error("Fetch error:", error);
+        updateDisplay('Error', 'リクエストの送信に失敗しました。');
+    });
 }
 
 function updateDisplay(status, result) {
