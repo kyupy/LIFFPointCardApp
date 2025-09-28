@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,33 +15,42 @@
 
     <div id="form-view" class="container" style="display:none;">
         <div class="card">
-            <h2>イベント参加申込</h2>
-            <p class="notes">イベント詳細はポスター等をご確認ください。</p>
+            <h2>Event Application</h2>
+            <p class="notes">Please see the event poster for details.</p>
             <hr>
             <form id="application-form">
+
                 <div class="form-group">
-                    <label>写真・動画のSNS掲載について</label>
+                    <label>Photo & Video Consent</label>
+                    <p class="small-text" style="text-align: left; background-color: rgba(0,0,0,0.1); padding: 10px; border-radius: 5px;">Photos and videos taken at this event may be uploaded to HMcC's social media. If you have any conditions or requests, please let us know.</p>
                     <div class="radio-group">
-                        <label><input type="radio" name="agreeSns" value="agree" checked> 同意する</label>
-                        <label><input type="radio" name="agreeSns" value="decline"> 同意しない</label>
+                        <label><input type="radio" name="agreeSns" value="agree" checked> I agree</label>
+                        <label><input type="radio" name="agreeSns" value="other"> Other</label>
                     </div>
                 </div>
+
                 <div class="form-group">
-                    <label for="past-participation">イベント参加経験</label>
+                    <label for="past-participation">Have you ever attended an HMcC event before?</label>
                     <select id="past-participation" name="pastParticipation">
-                        <option value="初めて">初めて</option>
-                        <option value="ある">参加したことがある</option>
+                        <option value="No, this is my first time">No, this is my first time</option>
+                        <option value="Yes">Yes</option>
                     </select>
                 </div>
+
                 <div class="form-group">
-                    <label for="how-did-you-know">このイベントを知ったきっかけ</label>
-                    <input type="text" id="how-did-you-know" name="howDidYouKnow" required>
+                    <label for="how-did-you-know">How did you hear about this event?</label>
+                    <input type="text" id="how-did-you-know" name="howDidYouKnow" placeholder="e.g., Instagram, from a friend, poster" required>
                 </div>
+                
                 <div class="form-group">
-                    <label for="reason">参加理由など (任意)</label>
-                    <textarea id="reason" name="reason" rows="3"></textarea>
+                    <label for="reason">Why did you decide to participate?</label>
+                    <textarea id="reason" name="reason" rows="3" placeholder="e.g., I want to make new friends."></textarea>
                 </div>
-                <button type="submit" class="submit-button">この内容で申し込む</button>
+                
+                <hr>
+                <p class="notes">If you haven't registered as a member yet, please do so from our official LINE account!</p>
+
+                <button type="submit" class="submit-button">Submit Application</button>
             </form>
         </div>
     </div>
@@ -49,16 +58,16 @@
     <div id="add-point-view" class="container" style="display:none;">
         <div class="card">
             <h2>MEMBER CARD</h2>
-            <p>ポイントを加算しました。</p>
-            <p class="small-text">ウィンドウを閉じてください。</p>
+            <p>Point added!</p>
+            <p class="small-text">You can now close this window.</p>
         </div>
     </div>
 
     <div id="complete-view" class="container" style="display:none;">
         <div class="card">
-            <h2>申し込み完了</h2>
-            <p>ありがとうございます。</p>
-            <p class="small-text">ウィンドウを閉じてください。</p>
+            <h2>Application Complete</h2>
+            <p>Thank you!</p>
+            <p class="small-text">You can now close this window.</p>
         </div>
     </div>
 
