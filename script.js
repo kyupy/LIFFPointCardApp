@@ -1,8 +1,8 @@
 // --- 設定項目 ---
 const LIFF_ID = "2008166327-NVge42LW"; 
 // 2つのGASのURLを設定
-const GAS_URL_REGISTER = "1fZcKxhiAs1YfHdl0Jb-icUNR6cnsda2t6xUInIkZrtw"; 
-const GAS_URL_ADD_POINT = "10_LFhWerbmpWWlGuGIHqDixWEOlzqP6NNUC1hLdpJpA"; 
+const GAS_URL_REGISTER = "https://script.google.com/macros/s/AKfycbxN47CVAu6CXVCwgtvWlTKavmfFxgeWxBwKCkIq7I2bHv8jHt3uZwTNsjVgNyZoOrJd/exec"; 
+const GAS_URL_ADD_POINT = "https://script.google.com/macros/s/AKfycbxWtpYlUi7giPbO_8NjGkKAcf1HGLauGJPp8PQOZaTyNJ6Idg7RsuHFeAAOvSEPAEhD/exec"; 
 // --- 設定はここまで --
 
 document.addEventListener('DOMContentLoaded', () => {
