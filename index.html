@@ -50,6 +50,7 @@
                         <option value="Invitation">Invitation</option>
                         <option value="Other">Other</option>
                     </select>
+                    <input type="text" name="howDidYouKnowOther" id="how-did-you-know-other" placeholder="Please specify" style="display:none; margin-top: 10px;">
                 </div>
                 
                 <div class="form-group">
@@ -62,6 +63,7 @@
                         <option value="To improve my language skills">To improve my language skills</option>
                         <option value="Other">Other</option>
                     </select>
+                    <textarea name="reasonOther" id="reason-other" rows="2" placeholder="Please write your reason here." style="display:none; margin-top: 10px;"></textarea>
                 </div>
                 
                 <hr>
@@ -96,12 +98,20 @@
         document.querySelectorAll('input[name="agreeSns"]').forEach(radio => {
             radio.addEventListener('change', function() {
                 const detailsTextarea = document.getElementById('agreeSnsDetails');
-                if (this.value === 'other') {
-                    detailsTextarea.style.display = 'block'; // 「Other」なら表示
-                } else {
-                    detailsTextarea.style.display = 'none'; // それ以外なら非表示
-                }
+                detailsTextarea.style.display = (this.value === 'other') ? 'block' : 'none';
             });
+        });
+
+        // 「きっかけ」プルダウンの変更を監視
+        document.getElementById('how-did-you-know').addEventListener('change', function() {
+            const otherInput = document.getElementById('how-did-you-know-other');
+            otherInput.style.display = (this.value === 'Other') ? 'block' : 'none';
+        });
+
+        // 「理由」プルダウンの変更を監視
+        document.getElementById('reason').addEventListener('change', function() {
+            const otherTextarea = document.getElementById('reason-other');
+            otherTextarea.style.display = (this.value === 'Other') ? 'block' : 'none';
         });
     </script>
 </body>
