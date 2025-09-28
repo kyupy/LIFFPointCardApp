@@ -24,9 +24,10 @@
                     <label>Photo & Video Consent</label>
                     <p class="small-text" style="text-align: left; background-color: rgba(0,0,0,0.1); padding: 10px; border-radius: 5px;">Photos and videos taken at this event may be uploaded to HMcC's social media. If you have any conditions or requests, please let us know.</p>
                     <div class="radio-group">
-                        <label><input type="radio" name="agreeSns" value="agree" checked> I agree</label>
-                        <label><input type="radio" name="agreeSns" value="other"> Other</label>
+                        <label><input type="radio" name="agreeSns" value="agree" checked><span></span>I agree</label>
+                        <label><input type="radio" name="agreeSns" value="other"><span></span>Other</label>
                     </div>
+                    <textarea name="agreeSnsDetails" id="agreeSnsDetails" rows="2" placeholder="Please write your conditions here." style="display:none; margin-top: 10px;"></textarea>
                 </div>
 
                 <div class="form-group">
@@ -36,15 +37,31 @@
                         <option value="Yes">Yes</option>
                     </select>
                 </div>
-
+                
                 <div class="form-group">
                     <label for="how-did-you-know">How did you hear about this event?</label>
-                    <input type="text" id="how-did-you-know" name="howDidYouKnow" placeholder="e.g., Instagram, from a friend, poster" required>
+                    <select id="how-did-you-know" name="howDidYouKnow" required>
+                        <option value="" disabled selected>Please select</option>
+                        <option value="HMcC LINE group">HMcC LINE group</option>
+                        <option value="HMcC Instagram">HMcC Instagram</option>
+                        <option value="Mirai Kaitaku Club Discord">Mirai Kaitaku Club Discord</option>
+                        <option value="Poster">Poster</option>
+                        <option value="From a friend">From a friend</option>
+                        <option value="Invitation">Invitation</option>
+                        <option value="Other">Other</option>
+                    </select>
                 </div>
                 
                 <div class="form-group">
                     <label for="reason">Why did you decide to participate?</label>
-                    <textarea id="reason" name="reason" rows="3" placeholder="e.g., I want to make new friends."></textarea>
+                     <select id="reason" name="reason" required>
+                        <option value="" disabled selected>Please select</option>
+                        <option value="To engage in international exchange">To engage in international exchange</option>
+                        <option value="To make new friends and connections">To make new friends and connections</option>
+                        <option value="To interact in a relaxed atmosphere">To interact in a relaxed atmosphere</option>
+                        <option value="To improve my language skills">To improve my language skills</option>
+                        <option value="Other">Other</option>
+                    </select>
                 </div>
                 
                 <hr>
@@ -73,5 +90,19 @@
 
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script src="script.js"></script>
+
+    <script>
+        // 同意ラジオボタンの変更を監視
+        document.querySelectorAll('input[name="agreeSns"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                const detailsTextarea = document.getElementById('agreeSnsDetails');
+                if (this.value === 'other') {
+                    detailsTextarea.style.display = 'block'; // 「Other」なら表示
+                } else {
+                    detailsTextarea.style.display = 'none'; // それ以外なら非表示
+                }
+            });
+        });
+    </script>
 </body>
 </html>
