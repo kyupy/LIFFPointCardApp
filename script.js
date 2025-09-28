@@ -1,7 +1,8 @@
 // --- 設定項目 ---
-// ポイント加算専用GASのURLを設定する
 const LIFF_ID = "2008166327-NVge42LW"; 
-const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxWtpYlUi7giPbO_8NjGkKAcf1HGLauGJPp8PQOZaTyNJ6Idg7RsuHFeAAOvSEPAEhD/exec"; 
+// 2つのGASのURLを設定
+const GAS_URL_REGISTER = "1fZcKxhiAs1YfHdl0Jb-icUNR6cnsda2t6xUInIkZrtw"; 
+const GAS_URL_ADD_POINT = "10_LFhWerbmpWWlGuGIHqDixWEOlzqP6NNUC1hLdpJpA"; 
 // --- 設定はここまで --
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -9,6 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 async function main() {
+    document.getElementById('loading-view').style.display = 'block';
+
     try {
         await liff.init({ liffId: LIFF_ID });
         if (!liff.isLoggedIn()) {
@@ -18,44 +21,80 @@ async function main() {
 
         const urlParams = new URLSearchParams(window.location.search);
         const eventId = urlParams.get('eventId');
+        const action = urlParams.get('action');
 
-        if (!eventId) {
-            updateDisplay('無効なアクセスです', 'イベントIDが見つかりません。');
+        if (!eventId || !action) {
+            document.body.innerHTML = "エラー: 不正なアクセスです。QRコードを読み取り直してください。";
             return;
         }
 
-        const profile = await liff.getProfile();
-        addPoint(profile.userId, eventId);
+        // actionに応じて処理を振り分け
+        if (action === 'register') {
+            setupRegistrationForm(eventId);
+        } else if (action === 'addPoint') {
+            await processPointAddition(eventId);
+        } else {
+            alert('不明なアクションです。');
+        }
 
     } catch (error) {
         console.error(error);
-        updateDisplay('エラーが発生しました', 'LIFFの初期化に失敗しました。');
+        alert('アプリの初期化に失敗しました。');
+        document.body.innerHTML = "エラー: アプリの初期化に失敗しました。";
+    } finally {
+        document.getElementById('loading-view').style.display = 'none';
     }
 }
 
-// addPoint関数を「投げっぱなし」方式に変更
-function addPoint(userId, eventId) {
-    // 画面表示をすぐに更新
-    updateDisplay('Request Sent', 'ポイント加算リクエストを送信しました。');
+// --- イベント申込フォームの準備 ---
+function setupRegistrationForm(eventId) {
+    document.getElementById('form-view').style.display = 'block';
 
-    // fetchを no-cors モードで実行し、応答を待たない
-    fetch(GAS_WEB_APP_URL, {
-        method: 'POST',
-        mode: 'no-cors', 
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-            action: 'addPoint',
-            userId: userId,
-            eventId: eventId
-        })
-    }).catch(error => {
-        // ネットワークエラーなど、送信自体に失敗した場合
-        console.error("Fetch error:", error);
-        updateDisplay('Error', 'リクエストの送信に失敗しました。');
+    const form = document.getElementById('application-form');
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const profile = await liff.getProfile();
+        const formData = new FormData(form);
+        const formProps = Object.fromEntries(formData);
+        
+        const submissionData = {
+            action: 'register',
+            userId: profile.userId,
+            displayName: profile.displayName,
+            eventId: eventId,
+            ...formProps
+        };
+
+        sendRequest(GAS_URL_REGISTER, submissionData);
+        document.getElementById('form-view').style.display = 'none';
+        document.getElementById('complete-view').style.display = 'block';
     });
 }
 
-function updateDisplay(status, result) {
-    document.getElementById('status-message').textContent = status;
-    document.getElementById('result-message').textContent = result;
+// --- ポイント加算処理 ---
+async function processPointAddition(eventId) {
+    document.getElementById('add-point-view').style.display = 'block';
+
+    const profile = await liff.getProfile();
+    const pointData = {
+        action: 'addPoint',
+        userId: profile.userId,
+        eventId: eventId
+    };
+
+    sendRequest(GAS_URL_ADD_POINT, pointData);
+}
+
+// --- 共通のデータ送信関数 ---
+function sendRequest(url, data) {
+    fetch(url, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(data)
+    }).catch(error => {
+        console.error("Fetch error:", error);
+        alert('データの送信に失敗しました。ネットワーク環境の良い場所で再度お試しください。');
+    });
 }

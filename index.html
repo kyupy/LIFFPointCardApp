@@ -3,15 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Point Addition</title>
+    <title>LIFF App</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
+    <div id="loading-view" class="container">
         <div class="card">
-            <p class="title">MEMBER CARD</p>
-            <h1 id="status-message">Processing...</h1>
-            <p id="result-message"></p>
+            <h1>Processing...</h1>
+        </div>
+    </div>
+
+    <div id="form-view" class="container" style="display:none;">
+        <div class="card">
+            <h2>イベント参加申込</h2>
+            <p class="notes">イベント詳細はポスター等をご確認ください。</p>
+            <hr>
+            <form id="application-form">
+                <div class="form-group">
+                    <label>写真・動画のSNS掲載について</label>
+                    <div class="radio-group">
+                        <label><input type="radio" name="agreeSns" value="agree" checked> 同意する</label>
+                        <label><input type="radio" name="agreeSns" value="decline"> 同意しない</label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="past-participation">イベント参加経験</label>
+                    <select id="past-participation" name="pastParticipation">
+                        <option value="初めて">初めて</option>
+                        <option value="ある">参加したことがある</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="how-did-you-know">このイベントを知ったきっかけ</label>
+                    <input type="text" id="how-did-you-know" name="howDidYouKnow" required>
+                </div>
+                <div class="form-group">
+                    <label for="reason">参加理由など (任意)</label>
+                    <textarea id="reason" name="reason" rows="3"></textarea>
+                </div>
+                <button type="submit" class="submit-button">この内容で申し込む</button>
+            </form>
+        </div>
+    </div>
+    
+    <div id="add-point-view" class="container" style="display:none;">
+        <div class="card">
+            <h2>MEMBER CARD</h2>
+            <p>ポイントを加算しました。</p>
+            <p class="small-text">ウィンドウを閉じてください。</p>
+        </div>
+    </div>
+
+    <div id="complete-view" class="container" style="display:none;">
+        <div class="card">
+            <h2>申し込み完了</h2>
+            <p>ありがとうございます。</p>
+            <p class="small-text">ウィンドウを閉じてください。</p>
         </div>
     </div>
 
